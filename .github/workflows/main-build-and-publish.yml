@@ -46,8 +46,19 @@ jobs:
       shell: pwsh
       run: .\build.ps1
 
+    - name: Create Archive
+      if: ${{ startsWith(github.event.ref, 'refs/tags/v') }}
+      run: cd build && 7z a -tzip -mx=9 go.zip go
+
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: windows-binaries
+        include-hidden-files: true
+        path: build/go.zip
+
   release:
-    needs: [build-linux]
+    needs: [build-linux, build-windows]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -60,6 +71,13 @@ jobs:
         name: linux-binaries
         path: dist-linux
 
+    - name: Download windows artefacts
+      if: ${{ startsWith(github.event.ref, 'refs/tags/v') }}
+      uses: actions/download-artifact@v4
+      with:
+        name: windows-binaries
+        path: dist-windows
+
     - name: Set VERSION variable from tag
       run: echo "VERSION=$(echo ${{ github.ref_name }} | sed 's/^v//')" >> $GITHUB_ENV
     - name: Show VERSION
@@ -68,6 +86,10 @@ jobs:
     - name: Set archive name (linux)
       if: ${{ startsWith(github.event.ref, 'refs/tags/v') }}
       run: cd dist-linux && mv go.tar.gz go${VERSION}.linux-amd64.tar.gz
+
+    - name: Set archive name (windows)
+      if: ${{ startsWith(github.event.ref, 'refs/tags/v') }}
+      run: cd dist-windows && mv go.zip go${VERSION}.windows-386.zip
 
     - name: Publish release
       if: ${{ startsWith(github.event.ref, 'refs/tags/v') }}
