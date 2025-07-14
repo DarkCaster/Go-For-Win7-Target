@@ -45,9 +45,15 @@ jobs:
         name: linux-binaries
         path: dist-linux
 
+    - name: Set VERSION variable from tag
+      run: |
+        echo "VERSION=${{ github.ref_name }}" >> $GITHUB_ENV
+        echo "VERSION=${VERSION:1}" >> $GITHUB_ENV
+        echo "VERSION=${VERSION}"
+
     - name: Create zip archive (linux)
       if: ${{ startsWith(github.event.ref, 'refs/tags/v') }}
-      run: cd dist-linux && zip -9 -r go.linux-amd64.zip *
+      run: cd dist-linux && zip -9 -r go${{ VERSION }}.linux-amd64.zip *
 
     - name: Publish release
       if: ${{ startsWith(github.event.ref, 'refs/tags/v') }}
