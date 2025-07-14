@@ -47,7 +47,6 @@ jobs:
       run: .\build.ps1
 
     - name: Create Archive
-      if: ${{ startsWith(github.event.ref, 'refs/tags/v') }}
       run: cd build && 7z a -tzip -mx=9 go.zip go
 
     - name: Upload Build Artifacts
