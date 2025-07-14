@@ -44,5 +44,6 @@ Write-Host "Starting build"
 $env:GOROOT_BOOTSTRAP = Join-Path $build_dir "go_bootstrap"
 $env:GOOS = "windows"
 $env:GOARCH = "386"
+$env:GOHOSTARCH = "386"
 
 & .\make.bat
