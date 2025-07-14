@@ -18,8 +18,7 @@ $mingwFile = Join-Path $build_dir "mingw32.7z"
 (New-Object System.Net.WebClient).DownloadFile($mingwUrl, $mingwFile)
 
 # extract mingw
-Add-Type -AssemblyName System.IO.Compression.FileSystem
-[System.IO.Compression.ZipFile]::ExtractToDirectory($mingwFile, $build_dir)
+& 7z x $mingwFile
 
 # download archive with bootstrap go lang compiler
 Write-Host "Downloading Go binaries for bootstrap"
