@@ -14,8 +14,8 @@ Set-Location $build_dir
 
 # download archive with bootstrap go lang compiler
 Write-Host "Downloading Go binaries for bootstrap"
-$bootstrapUrl = "https://go.dev/dl/go1.22.12.windows-amd64.zip"
-$bootstrapFile = Join-Path $build_dir "go1.22.12.windows-amd64.zip"
+$bootstrapUrl = "https://go.dev/dl/go1.22.12.windows-386.zip"
+$bootstrapFile = Join-Path $build_dir "go_bootstrap.zip"
 (New-Object System.Net.WebClient).DownloadFile($bootstrapUrl, $bootstrapFile)
 
 # extract bootstrap
