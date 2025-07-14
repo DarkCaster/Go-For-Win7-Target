@@ -22,3 +22,11 @@ jobs:
 
     - name: Build
       run: ./build.sh
+
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: go-binaries
+        include-hidden-files: true
+        path: |
+          build/go
