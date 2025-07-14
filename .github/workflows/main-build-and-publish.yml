@@ -19,3 +19,6 @@ jobs:
 
     - name: Install package
       run: sudo apt-get -y install wget
+
+    - name: Build
+      run: ./build.sh
