@@ -33,6 +33,24 @@ jobs:
         include-hidden-files: true
         path: build/go.tar.gz
 
+  build-windows:
+    runs-on: windows-latest
+    permissions:
+      contents: read
+
+    steps:
+    - name: Check out repository code
+      uses: actions/checkout@v4
+
+    - name: Set up MinGW
+      uses: egor-tensin/setup-mingw@v2
+      with:
+        platform: any
+
+    - name: Build
+      shell: pwsh
+      run: .\build.ps1
+
   release:
     needs: [build-linux]
     runs-on: ubuntu-latest
