@@ -42,6 +42,7 @@ $patchFile = Join-Path $script_dir "patches\go-$($env:gosrc_ver).patch"
 Set-Location (Join-Path $build_dir "go\src")
 Write-Host "Starting build"
 $env:GOROOT_BOOTSTRAP = Join-Path $build_dir "go_bootstrap"
-$env:GOHOSTARCH = "386"
+$env:GOOS = "windows"
+$env:GOARCH = "386"
 
 & .\make.bat
