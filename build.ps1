@@ -11,7 +11,6 @@ if (Test-Path $build_dir) { Remove-Item $build_dir -Recurse -Force }
 New-Item -ItemType Directory -Path $build_dir -Force | Out-Null
 Set-Location $build_dir
 
-
 # download archive with bootstrap go lang compiler
 Write-Host "Downloading Go binaries for bootstrap"
 $bootstrapUrl = "https://go.dev/dl/go1.22.12.windows-386.zip"
