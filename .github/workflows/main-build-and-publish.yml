@@ -46,10 +46,9 @@ jobs:
         path: dist-linux
 
     - name: Set VERSION variable from tag
-      run: >
-        echo "VERSION=${{ github.ref_name }}" >> $GITHUB_ENV;
-        echo "VERSION=${VERSION:1}" >> $GITHUB_ENV;
-        echo "VERSION=${VERSION}"
+      run: echo "VERSION=$(echo ${{ github.ref_name }} | sed 's/^v//' |)" >> $GITHUB_ENV
+    - name: Show VERSION
+      run: echo "VERSION=$(VERSION)"
 
     - name: Create zip archive (linux)
       if: ${{ startsWith(github.event.ref, 'refs/tags/v') }}
