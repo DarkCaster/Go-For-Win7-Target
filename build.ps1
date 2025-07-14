@@ -11,6 +11,16 @@ if (Test-Path $build_dir) { Remove-Item $build_dir -Recurse -Force }
 New-Item -ItemType Directory -Path $build_dir -Force | Out-Null
 Set-Location $build_dir
 
+# download mingw
+Write-Host "Downloading Go binaries for bootstrap"
+$mingwUrl = "https://github.com/niXman/mingw-builds-binaries/releases/download/15.1.0-rt_v12-rev0/i686-15.1.0-release-win32-dwarf-msvcrt-rt_v12-rev0.7z"
+$mingwFile = Join-Path $build_dir "mingw32.7z"
+(New-Object System.Net.WebClient).DownloadFile($mingwUrl, $mingwFile)
+
+# extract mingw
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+[System.IO.Compression.ZipFile]::ExtractToDirectory($mingwFile, $build_dir)
+
 # download archive with bootstrap go lang compiler
 Write-Host "Downloading Go binaries for bootstrap"
 $bootstrapUrl = "https://go.dev/dl/go1.22.12.windows-amd64.zip"
