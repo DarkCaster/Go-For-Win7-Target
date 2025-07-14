@@ -8,7 +8,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  build-linux:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -26,7 +26,36 @@ jobs:
     - name: Upload Build Artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: go-binaries
+        name: linux-binaries
         include-hidden-files: true
         path: |
           build/go
+
+  release:
+    needs: [build-linux]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+    - name: Download linux artefacts
+      if: ${{ startsWith(github.event.ref, 'refs/tags/v') }}
+      uses: actions/download-artifact@v4
+      with:
+        name: linux-binaries
+        path: dist-linux
+
+    - name: Create zip archive (linux)
+      if: ${{ startsWith(github.event.ref, 'refs/tags/v') }}
+      run: cd dist-linux && zip -9 -r go.linux-amd64.zip *
+
+    - name: Publish release
+      if: ${{ startsWith(github.event.ref, 'refs/tags/v') }}
+      uses: ncipollo/release-action@v1
+      with:
+        prerelease: true
+        allowUpdates: true
+        omitBodyDuringUpdate: true
+        omitNameDuringUpdate: true
+        omitPrereleaseDuringUpdate: true
+        artifacts: dist-windows/*.zip, dist-linux/*.zip
