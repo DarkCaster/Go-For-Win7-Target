@@ -1,6 +1,6 @@
 diff -uprN go.old/src/crypto/internal/sysrand/rand_windows.go go/src/crypto/internal/sysrand/rand_windows.go
 --- go.old/src/crypto/internal/sysrand/rand_windows.go	2025-07-03 00:47:15.000000000 +0300
-+++ go/src/crypto/internal/sysrand/rand_windows.go	2025-07-14 06:47:27.792602493 +0300
++++ go/src/crypto/internal/sysrand/rand_windows.go	2025-07-14 16:05:18.718670401 +0300
 @@ -6,6 +6,24 @@ package sysrand
  
  import "internal/syscall/windows"
@@ -29,7 +29,7 @@ diff -uprN go.old/src/crypto/internal/sysrand/rand_windows.go go/src/crypto/inte
  }
 diff -uprN go.old/src/internal/syscall/windows/zsyscall_windows.go go/src/internal/syscall/windows/zsyscall_windows.go
 --- go.old/src/internal/syscall/windows/zsyscall_windows.go	2025-07-03 00:47:15.000000000 +0300
-+++ go/src/internal/syscall/windows/zsyscall_windows.go	2025-07-14 06:55:38.919919571 +0300
++++ go/src/internal/syscall/windows/zsyscall_windows.go	2025-07-14 16:05:18.718670401 +0300
 @@ -38,7 +38,6 @@ func errnoErr(e syscall.Errno) error {
  
  var (
@@ -64,7 +64,7 @@ diff -uprN go.old/src/internal/syscall/windows/zsyscall_windows.go go/src/intern
  	}
 diff -uprN go.old/src/runtime/os_windows.go go/src/runtime/os_windows.go
 --- go.old/src/runtime/os_windows.go	2025-07-03 00:47:15.000000000 +0300
-+++ go/src/runtime/os_windows.go	2025-07-14 07:01:53.755124369 +0300
++++ go/src/runtime/os_windows.go	2025-07-14 16:05:18.719670380 +0300
 @@ -129,7 +129,7 @@ var (
  	_ stdFunction
  
@@ -110,7 +110,7 @@ diff -uprN go.old/src/runtime/os_windows.go go/src/runtime/os_windows.go
  	return n
 diff -uprN go.old/src/syscall/exec_windows.go go/src/syscall/exec_windows.go
 --- go.old/src/syscall/exec_windows.go	2025-07-03 00:47:15.000000000 +0300
-+++ go/src/syscall/exec_windows.go	2025-07-14 07:17:29.072861412 +0300
++++ go/src/syscall/exec_windows.go	2025-07-14 16:05:18.720670359 +0300
 @@ -317,6 +317,17 @@ func StartProcess(argv0 string, argv []s
  		}
  	}
@@ -160,3 +160,34 @@ diff -uprN go.old/src/syscall/exec_windows.go go/src/syscall/exec_windows.go
  	// The presence of a NULL handle in the list is enough to cause PROC_THREAD_ATTRIBUTE_HANDLE_LIST
  	// to treat the entire list as empty, so remove NULL handles.
  	j := 0
+diff -uprN go.old/src/syscall/zsyscall_windows.go go/src/syscall/zsyscall_windows.go
+--- go.old/src/syscall/zsyscall_windows.go	2025-07-03 00:47:15.000000000 +0300
++++ go/src/syscall/zsyscall_windows.go	2025-07-14 16:11:00.481093548 +0300
+@@ -41,6 +41,7 @@ var (
+ 	moddnsapi   = NewLazyDLL(sysdll.Add("dnsapi.dll"))
+ 	modiphlpapi = NewLazyDLL(sysdll.Add("iphlpapi.dll"))
+ 	modkernel32 = NewLazyDLL(sysdll.Add("kernel32.dll"))
++	modntdll    = NewLazyDLL(sysdll.Add("ntdll.dll"))
+ 	modmswsock  = NewLazyDLL(sysdll.Add("mswsock.dll"))
+ 	modnetapi32 = NewLazyDLL(sysdll.Add("netapi32.dll"))
+ 	modsecur32  = NewLazyDLL(sysdll.Add("secur32.dll"))
+@@ -168,6 +169,7 @@ var (
+ 	procNetApiBufferFree                   = modnetapi32.NewProc("NetApiBufferFree")
+ 	procNetGetJoinInformation              = modnetapi32.NewProc("NetGetJoinInformation")
+ 	procNetUserGetInfo                     = modnetapi32.NewProc("NetUserGetInfo")
++	procRtlGetNtVersionNumbers             = modntdll.NewProc("RtlGetNtVersionNumbers")
+ 	procGetUserNameExW                     = modsecur32.NewProc("GetUserNameExW")
+ 	procTranslateNameW                     = modsecur32.NewProc("TranslateNameW")
+ 	procCommandLineToArgvW                 = modshell32.NewProc("CommandLineToArgvW")
+@@ -1219,6 +1221,11 @@ func NetUserGetInfo(serverName *uint16,
+ 	return
+ }
+ 
++func rtlGetNtVersionNumbers(majorVersion *uint32, minorVersion *uint32, buildNumber *uint32) {
++	Syscall(procRtlGetNtVersionNumbers.Addr(), 3, uintptr(unsafe.Pointer(majorVersion)), uintptr(unsafe.Pointer(minorVersion)), uintptr(unsafe.Pointer(buildNumber)))
++	return
++}
++
+ func GetUserNameEx(nameFormat uint32, nameBuffre *uint16, nSize *uint32) (err error) {
+ 	r1, _, e1 := Syscall(procGetUserNameExW.Addr(), 3, uintptr(nameFormat), uintptr(unsafe.Pointer(nameBuffre)), uintptr(unsafe.Pointer(nSize)))
+ 	if r1&0xff == 0 {
