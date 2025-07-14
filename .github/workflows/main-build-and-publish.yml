@@ -23,13 +23,15 @@ jobs:
     - name: Build
       run: ./build.sh
 
+    - name: Clean
+      run: cd build && rm -rf go_bootstrap && rm go*.tar.gz
+
     - name: Upload Build Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: linux-binaries
         include-hidden-files: true
-        path: |
-          build/go
+        path: build
 
   release:
     needs: [build-linux]
