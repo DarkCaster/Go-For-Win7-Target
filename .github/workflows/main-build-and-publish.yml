@@ -23,15 +23,15 @@ jobs:
     - name: Build
       run: ./build.sh
 
-    - name: Clean
-      run: cd build && rm -rf go_bootstrap && rm go*.tar.gz
+    - name: Create Archive
+      run: cd build && tar -czvf go.tar.gz --owner=0 --group=0 go
 
     - name: Upload Build Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: linux-binaries
         include-hidden-files: true
-        path: build
+        path: build/go.tar.gz
 
   release:
     needs: [build-linux]
@@ -52,9 +52,9 @@ jobs:
     - name: Show VERSION
       run: echo "VERSION=${VERSION}"
 
-    - name: Create zip archive (linux)
+    - name: Set archive name (linux)
       if: ${{ startsWith(github.event.ref, 'refs/tags/v') }}
-      run: cd dist-linux && zip -9 -r go${VERSION}.linux-amd64.zip *
+      run: cd dist-linux && mv go.tar.gz go${VERSION}.linux-amd64.tar.gz
 
     - name: Publish release
       if: ${{ startsWith(github.event.ref, 'refs/tags/v') }}
@@ -65,4 +65,4 @@ jobs:
         omitBodyDuringUpdate: true
         omitNameDuringUpdate: true
         omitPrereleaseDuringUpdate: true
-        artifacts: dist-windows/*.zip, dist-linux/*.zip
+        artifacts: dist-windows/*.zip, dist-linux/*.tar.gz
