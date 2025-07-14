@@ -12,13 +12,14 @@ New-Item -ItemType Directory -Path $build_dir -Force | Out-Null
 Set-Location $build_dir
 
 # download mingw
-Write-Host "Downloading Go binaries for bootstrap"
+Write-Host "Downloading MinGW"
 $mingwUrl = "https://github.com/niXman/mingw-builds-binaries/releases/download/15.1.0-rt_v12-rev0/i686-15.1.0-release-win32-dwarf-msvcrt-rt_v12-rev0.7z"
 $mingwFile = Join-Path $build_dir "mingw32.7z"
 (New-Object System.Net.WebClient).DownloadFile($mingwUrl, $mingwFile)
 
 # extract mingw
 & 7z x $mingwFile
+$mingwBinPath = Join-Path $build_dir "mingw32\bin"
 
 # download archive with bootstrap go lang compiler
 Write-Host "Downloading Go binaries for bootstrap"
@@ -50,4 +51,9 @@ $patchFile = Join-Path $script_dir "patches\go-$($env:gosrc_ver).patch"
 Set-Location (Join-Path $build_dir "go\src")
 Write-Host "Starting build"
 $env:GOROOT_BOOTSTRAP = Join-Path $build_dir "go_bootstrap"
+
+# Add mingw to PATH before build
+$env:PATH = "$mingwBinPath;$env:PATH"
+Write-Host "Updated PATH: $env:PATH"
+
 & .\make.bat
