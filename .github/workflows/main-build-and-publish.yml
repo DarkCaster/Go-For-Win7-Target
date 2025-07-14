@@ -46,7 +46,7 @@ jobs:
         path: dist-linux
 
     - name: Set VERSION variable from tag
-      run: echo "VERSION=$(echo ${{ github.ref_name }} | sed 's/^v//' |)" >> $GITHUB_ENV
+      run: echo "VERSION=$(echo ${{ github.ref_name }} | sed 's/^v//')" >> $GITHUB_ENV
     - name: Show VERSION
       run: echo "VERSION=$(VERSION)"
 
