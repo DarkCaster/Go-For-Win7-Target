@@ -39,5 +39,8 @@ Build scripts will:
 
 - Use `go` binary from `build/go/bin` on your machine.
 - Set following env variables before build:
-  - `GOOS=windows`
-  - `GOARCH=amd64` or `GOARCH=386`
+  - `GOROOT=<dir>` - directory of this Go compiler instance: `build/go`, or directory where downloaded binary archive was extracted
+  - `GOPATH=<dir>` - base directory for various go downloads and caches
+  - `GOTOOLCHAIN=local` - force the build system to use this specific compiler and not download compiler binaries for the corresponding `toolchain` line in `go.mod`
+  - `GOOS=windows` - set target platform for which it will compile binaries, when compiling for windows it will use patched runtime that should work with Windows 7
+  - `GOARCH=amd64` or `GOARCH=386` - architecture, both should work. **NOTE:** `arm` and `arm64` may work but untested (and also makes no sense for Windows 7)
