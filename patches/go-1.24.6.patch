@@ -1,6 +1,6 @@
 diff -uprN go.old/src/crypto/internal/sysrand/rand_windows.go go/src/crypto/internal/sysrand/rand_windows.go
 --- go.old/src/crypto/internal/sysrand/rand_windows.go	2025-08-01 22:18:26.000000000 +0300
-+++ go/src/crypto/internal/sysrand/rand_windows.go	2025-08-15 15:53:15.984108164 +0300
++++ go/src/crypto/internal/sysrand/rand_windows.go	2025-08-15 19:36:29.910003490 +0300
 @@ -6,6 +6,24 @@ package sysrand
  
  import "internal/syscall/windows"
@@ -29,7 +29,7 @@ diff -uprN go.old/src/crypto/internal/sysrand/rand_windows.go go/src/crypto/inte
  }
 diff -uprN go.old/src/internal/syscall/windows/zsyscall_windows.go go/src/internal/syscall/windows/zsyscall_windows.go
 --- go.old/src/internal/syscall/windows/zsyscall_windows.go	2025-08-01 22:18:26.000000000 +0300
-+++ go/src/internal/syscall/windows/zsyscall_windows.go	2025-08-15 15:53:15.984108164 +0300
++++ go/src/internal/syscall/windows/zsyscall_windows.go	2025-08-15 19:36:29.911003479 +0300
 @@ -38,7 +38,6 @@ func errnoErr(e syscall.Errno) error {
  
  var (
@@ -62,9 +62,20 @@ diff -uprN go.old/src/internal/syscall/windows/zsyscall_windows.go go/src/intern
  	if r1 == 0 {
  		err = errnoErr(e1)
  	}
+diff -uprN go.old/src/os/exec_windows.go go/src/os/exec_windows.go
+--- go.old/src/os/exec_windows.go	2025-08-01 22:18:26.000000000 +0300
++++ go/src/os/exec_windows.go	2025-08-15 19:49:46.885428212 +0300
+@@ -44,6 +44,7 @@ func (p *Process) wait() (ps *ProcessSta
+ 	if e != nil {
+ 		return nil, NewSyscallError("GetProcessTimes", e)
+ 	}
++	defer time.Sleep(5 * time.Millisecond)
+ 	defer p.Release()
+ 	return &ProcessState{p.Pid, syscall.WaitStatus{ExitCode: ec}, &u}, nil
+ }
 diff -uprN go.old/src/runtime/os_windows.go go/src/runtime/os_windows.go
 --- go.old/src/runtime/os_windows.go	2025-08-01 22:18:26.000000000 +0300
-+++ go/src/runtime/os_windows.go	2025-08-15 15:53:15.985108154 +0300
++++ go/src/runtime/os_windows.go	2025-08-15 19:36:29.912003468 +0300
 @@ -129,7 +129,7 @@ var (
  	_ stdFunction
  
@@ -110,7 +121,7 @@ diff -uprN go.old/src/runtime/os_windows.go go/src/runtime/os_windows.go
  	return n
 diff -uprN go.old/src/syscall/exec_windows.go go/src/syscall/exec_windows.go
 --- go.old/src/syscall/exec_windows.go	2025-08-01 22:18:26.000000000 +0300
-+++ go/src/syscall/exec_windows.go	2025-08-15 15:53:15.986108144 +0300
++++ go/src/syscall/exec_windows.go	2025-08-15 19:36:29.913003457 +0300
 @@ -317,6 +317,17 @@ func StartProcess(argv0 string, argv []s
  		}
  	}
@@ -162,7 +173,7 @@ diff -uprN go.old/src/syscall/exec_windows.go go/src/syscall/exec_windows.go
  	j := 0
 diff -uprN go.old/src/syscall/zsyscall_windows.go go/src/syscall/zsyscall_windows.go
 --- go.old/src/syscall/zsyscall_windows.go	2025-08-01 22:18:26.000000000 +0300
-+++ go/src/syscall/zsyscall_windows.go	2025-08-15 15:53:15.986108144 +0300
++++ go/src/syscall/zsyscall_windows.go	2025-08-15 19:36:29.914003446 +0300
 @@ -41,6 +41,7 @@ var (
  	moddnsapi   = NewLazyDLL(sysdll.Add("dnsapi.dll"))
  	modiphlpapi = NewLazyDLL(sysdll.Add("iphlpapi.dll"))
