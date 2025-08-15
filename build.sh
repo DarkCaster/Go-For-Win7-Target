@@ -3,7 +3,7 @@
 set -e
 
 # set version to build if not already set
-[[ -z $gosrc_ver ]] && gosrc_ver="1.24.6"
+[[ -z $gosrc_ver ]] && gosrc_ver="1.25.0"
 
 script_dir="$(cd "$(dirname "$0")" && pwd)"
 build_dir="$script_dir/build"
