@@ -10,9 +10,13 @@ This project is maintained in my spare time primarily to support my own needs fo
 - Long-term stability
 - Timely updates to match new Go releases
 
+There are other GoLang Windows 7 ports exists, consider to use them instead of this project, example of a good port: <https://github.com/thongtech/go-legacy-win7>
+
+This port exists primarily for the sole purpose of running some of my own applications on legacy systems. It may contain any quick and dirty changes to achieve that goal, cutting corners where necessary and accidentally breaking compatibility with anything else.
+
 Future maintenance is uncertain - there may come a point where updates cease entirely. The feasibility of backporting newer Go versions depends on technical complexity and available time. Pre-built binaries for the latest supported version are available in the [Releases](https://github.com/DarkCaster/Go-For-Win7-Target/releases) section.
 
-This project based on reverse engineering insights from [0x08.ru's technical article](https://blog.0x08.ru/backporting-golang-to-windows7).
+This project based on reverse engineering insights from [0x08.ru's technical article](https://blog.0x08.ru/backporting-golang-to-windows7) and [go-legacy-win7 project by thongtech](https://github.com/thongtech/go-legacy-win7)
 
 ## Building the Backport
 

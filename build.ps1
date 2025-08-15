@@ -1,7 +1,7 @@
 #Requires -Version 4.0
 
 # set version to build if not already set
-if (-not $env:gosrc_ver) { $env:gosrc_ver = "1.24.5" }
+if (-not $env:gosrc_ver) { $env:gosrc_ver = "1.24.6" }
 
 $script_dir = Split-Path -Parent $MyInvocation.MyCommand.Definition
 $build_dir = Join-Path $script_dir "build"
